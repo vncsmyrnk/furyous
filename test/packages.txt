@@ -1,0 +1,86 @@
+Architecture: amd64
+Description: An attempt to be a shell-agnostic custom utilities tool.
+Homepage: https://github.com/vncsmyrnk/shell-utils
+Installed-Size: 12677
+License: GPL-3.0
+Maintainer: Vinicius Mayrink <vncsmyrnk@gmail.com>
+Package: shell-utils
+Priority: optional
+Section: default
+Vendor: none
+Version: 1.0.0+git219.6ebfd32
+Size: 5420890
+MD5sum: edc798d1a12d1a932bb2a8e157abe3f5
+SHA256: de2e0d198a484af18e351288e7a9085dc128e894587c4830f8bd0d0fe5d7fb22
+SHA1: 733bf566c4ce2d57d6c53d62d59e85e6b0928732
+Filename: files/ver_mIRBj/shell-utils_1.0.0+git219.6ebfd32_amd64.deb
+
+Architecture: amd64
+Description: An attempt to be a shell-agnostic custom utilities tool.
+Homepage: https://github.com/vncsmyrnk/shell-utils
+Installed-Size: 12636
+License: GPL-3.0
+Maintainer: Vinicius Mayrink <vncsmyrnk@gmail.com>
+Package: shell-utils
+Priority: optional
+Section: default
+Vendor: none
+Version: 1.0.0+git239.e64706f
+Size: 5402614
+MD5sum: f262f17a50e4ebb67fa5dc5796d26388
+SHA256: 1b2e8233bcbed99b33f34d6dca85ccc965860608e7294b363c41e35824013d9c
+SHA1: 98ccddc2189842d493a1c14e4b9766e114e5f590
+Filename: files/ver_FV76V/shell-utils_1.0.0+git239.e64706f_amd64.deb
+
+Architecture: amd64
+Depends: libglib2.0-0, gnome-shell
+Description: A "Run or raise" CLI tool for Wayland GNOME.
+Homepage: https://github.com/vncsmyrnk/gwin
+Installed-Size: 2615
+License: GPL-3.0
+Maintainer: Vinicius Mayrink <vncsmyrnk@gmail.com>
+Package: gwin
+Priority: optional
+Section: default
+Vendor: none
+Version: 1.0.0+git60.0d80df9
+Size: 748158
+MD5sum: 4a798953c1d50453e20af371509dc6ba
+SHA256: a93ee550f1f22dc9fb62beef1ee0e3ee3f4598f535f6de682a7f4ad385915df7
+SHA1: 56ee56e79e78ed799b15d6a1ff5f01ff1b36f4db
+Filename: files/ver_1cddNX/gwin_1.0.0+git60.0d80df9_amd64.deb
+
+Architecture: amd64
+Description: An attempt to be a shell-agnostic custom utilities tool.
+Homepage: https://github.com/vncsmyrnk/shell-utils
+Installed-Size: 12637
+License: GPL-3.0
+Maintainer: Vinicius Mayrink <vncsmyrnk@gmail.com>
+Package: shell-utils
+Priority: optional
+Section: default
+Vendor: none
+Version: 1.0.0+git242.8b34a8b
+Size: 5402486
+MD5sum: 6f533a5267bc6ed114b938f3679cb5c3
+SHA256: d3ea8a3daa267e270d8fe1cf3473604c9fb6a2e211c7eab5e0afeb24602136ce
+SHA1: ab2e26e75ac6b7bc6557ba3d8a7246bdb8f3b118
+Filename: files/ver_ZLzjZ/shell-utils_1.0.0+git242.8b34a8b_amd64.deb
+
+Architecture: amd64
+Depends: libglib2.0-0, gnome-shell
+Description: A "Run or raise" CLI tool for Wayland GNOME.
+Homepage: https://github.com/vncsmyrnk/gwin
+Installed-Size: 2604
+License: GPL-3.0
+Maintainer: Vinicius Mayrink <vncsmyrnk@gmail.com>
+Package: gwin
+Priority: optional
+Section: default
+Vendor: none
+Version: 1.0.0+git56.5b02aee
+Size: 742814
+MD5sum: 9f158de45cdb0c7d4674af2a02ac74bf
+SHA256: b7351ef0457a9d5d0a307596c798c6d7618dc5dbc844436bcb528015cdef5afb
+SHA1: 84c96cf08e13d5c5146f1942dc335620e7ee4fe6
+Filename: files/ver_2fvnEQ/gwin_1.0.0+git56.5b02aee_amd64.deb

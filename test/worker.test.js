@@ -1,0 +1,123 @@
+import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import worker from '../src/worker.js';
+
+const MOCK_PACKAGES_RESPONSE = readFileSync(
+  resolve(__dirname, './packages.txt'),
+  'utf8'
+);
+
+const mockEnv = {
+  REGISTRY_BASE_URL: 'https://apt.fury.io'
+};
+
+describe('Worker Request Flow', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('successfully parses the highest version from a standard response', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(MOCK_PACKAGES_RESPONSE),
+      })
+    ));
+
+    const request = new Request('http://localhost?user=vncsmyrnk&pkg=shell-utils');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Content-Type')).toBe('text/plain');
+    expect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');
+
+    const resultText = await response.text();
+    expect(resultText).toBe('1.0.0+git242.8b34a8b');
+  });
+
+  test('returns a 502 error if the upstream registry is unreachable', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 502,
+        statusText: 'Bad Gateway'
+      })
+    ));
+
+    const request = new Request('http://localhost?user=name&pkg=package');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(502);
+    const resultText = await response.text();
+    expect(resultText).toContain('Failed to fetch upstream');
+  });
+
+  test('returns 404 if the upstream registry is empty or unparsable', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(""),
+      })
+    ));
+
+    const request = new Request('http://localhost?user=name&pkg=package');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(404);
+
+    const resultText = await response.text();
+    expect(resultText).toContain('Package \'package\' not found for user \'name\'.');
+  });
+
+  test('returns 400 if "pkg" query string is not present', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(""),
+      })
+    ));
+
+    const request = new Request('http://localhost?user=name');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(400);
+
+    const resultText = await response.text();
+    expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
+  });
+
+  test('returns 400 if "user" query string is not present', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(""),
+      })
+    ));
+
+    const request = new Request('http://localhost?pkg=package');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(400);
+
+    const resultText = await response.text();
+    expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
+  });
+
+  test('returns 400 if "user" and "pkg" query strings are not present', async () => {
+    vi.stubGlobal('fetch', vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(""),
+      })
+    ));
+
+    const request = new Request('http://localhost');
+    const response = await worker.fetch(request, mockEnv, {});
+
+    expect(response.status).toBe(400);
+
+    const resultText = await response.text();
+    expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
+  });
+});
