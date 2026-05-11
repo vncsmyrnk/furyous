@@ -1,5 +1,8 @@
+![javascript](https://img.shields.io/badge/javascript-grey?logo=javascript&style=plastic)
+![Terraform](https://img.shields.io/badge/Terraform-grey?logo=terraform&style=plastic)
 [![Cloudflare Workers](https://img.shields.io/badge/-Cloudflare%20Workers-grey?style=plastic&logo=cloudflare)](https://developers.cloudflare.com/workers/)
-[![CI Pipeline](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml/badge.svg)](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml)
+<br>
+[![CI/CD Pipeline](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml/badge.svg)](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml)
 [![contributions](https://img.shields.io/badge/contributions-welcome-brightgreen?labelColor=384047&color=33cb56&style=plastic)](https://github.com/vncsmyrnk/furyous/issues)
 
 # furyous
