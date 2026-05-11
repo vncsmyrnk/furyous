@@ -28,4 +28,5 @@ The service is entirely controlled via URL query parameters. Send a `GET` reques
 
 ### Examples
 
-[furyous.vncsmyrnk.dev?user=vncsmyrnk&pkg=shell-utils](https://furyous.vncsmyrnk.dev/?user=vncsmyrnk&pkg=shell-utils)
+- [vncsmyrnk/gwin](https://github.com/vncsmyrnk/gwin/blob/005f748cbb2c534ed83712fcca9291d072c1f9b1/README.md?plain=1#L4): [furyous.vncsmyrnk.dev?user=vncsmyrnk&pkg=gwin](https://furyous.vncsmyrnk.dev/?user=vncsmyrnk&pkg=gwin)
+- [vncsmyrnk/shell-utils](https://github.com/vncsmyrnk/shell-utils/blob/9759c23e2dc7e8156009ae41e71eb66ae976050d/README.md?plain=1#L4): [furyous.vncsmyrnk.dev?user=vncsmyrnk&pkg=shell-utils](https://furyous.vncsmyrnk.dev/?user=vncsmyrnk&pkg=shell-utils)
