@@ -31,6 +31,13 @@ resource "cloudflare_workers_script" "proxy_script" {
       text = var.edge_cache_ttl
     }
   ]
+
+  lifecycle {
+    ignore_changes = [
+      content,
+      bindings
+    ]
+  }
 }
 
 resource "cloudflare_workers_route" "furyous_route" {
