@@ -34,6 +34,13 @@ function compareSemVer(a, b) {
   return a > b ? 1 : -1;
 }
 
+async function saveToEdgeCache(request, stringData, ttlSeconds) {
+  const cacheResponse = new Response(stringData, {
+    headers: { 'Cache-Control': `s-maxage=${ttlSeconds}` }
+  });
+  await caches.default.put(request, cacheResponse);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const requestUrl = new URL(request.url);
@@ -47,10 +54,17 @@ export default {
       });
     }
 
+    const cache = caches.default;
+    const cacheKey = new Request(request.url, request);
+    let cachedResponse = await cache.match(cacheKey);
+    if (cachedResponse) {
+      const hitResponse = new Response(cachedResponse.body, cachedResponse);
+      hitResponse.headers.set('X-Proxy-Cache', 'HIT');
+      return hitResponse;
+    }
+
     const baseUrl = env.REGISTRY_BASE_URL || "https://apt.fury.io";
-
     const safeUser = targetUser.replace(/[^a-zA-Z0-9_-]/g, "");
-
     const targetRepoUrl = `${baseUrl}/${safeUser}/Packages`;
 
     try {
@@ -84,13 +98,19 @@ export default {
          return new Response(`Package '${targetPkg}' not found for user '${safeUser}'.`, { status: 404 });
       }
 
-      return new Response(latestVersion, {
+      const finalResponse = new Response(latestVersion, {
         status: 200,
         headers: {
           'Content-Type': 'text/plain',
           'Cache-Control': 'public, max-age=3600'
         }
       });
+
+      const ttl = env.EDGE_CACHE_TTL || 3600;
+      ctx.waitUntil(saveToEdgeCache(cacheKey, latestVersion, ttl));
+
+      finalResponse.headers.set('X-Proxy-Cache', 'MISS');
+      return finalResponse;
 
     } catch (error) {
       return new Response(`Error: ${error.message}`, { status: 500 });

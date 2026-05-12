@@ -12,7 +12,23 @@ const mockEnv = {
   REGISTRY_BASE_URL: 'https://apt.fury.io'
 };
 
+const mockMatch = vi.fn();
+const mockPut = vi.fn();
+
+global.caches = {
+  default: {
+    match: mockMatch,
+    put: mockPut,
+  },
+};
+
 describe('Worker Request Flow', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockMatch.mockResolvedValue(null);
+    mockPut.mockResolvedValue(undefined);
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -26,7 +42,9 @@ describe('Worker Request Flow', () => {
     ));
 
     const request = new Request('http://localhost?user=vncsmyrnk&pkg=shell-utils');
-    const response = await worker.fetch(request, mockEnv, {});
+    const env = {};
+    const ctx = { waitUntil: vi.fn() };
+    const response = await worker.fetch(request, env, ctx);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe('text/plain');
@@ -34,6 +52,8 @@ describe('Worker Request Flow', () => {
 
     const resultText = await response.text();
     expect(resultText).toBe('1.0.0+git242.8b34a8b');
+    expect(mockPut).toHaveBeenCalledOnce();
+    expect(ctx.waitUntil).toHaveBeenCalledOnce();
   });
 
   test('returns a 502 error if the upstream registry is unreachable', async () => {
@@ -119,5 +139,19 @@ describe('Worker Request Flow', () => {
 
     const resultText = await response.text();
     expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
+  });
+
+  test('returns instantly from cache on a HIT', async () => {
+    mockMatch.mockResolvedValue(new Response("1.0.0+cached"));
+
+    const request = new Request('http://localhost?user=name&pkg=package');
+    const env = {};
+    const ctx = { waitUntil: vi.fn() };
+
+    const response = await worker.fetch(request, env, ctx);
+    const text = await response.text();
+
+    expect(text).toBe("1.0.0+cached");
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });

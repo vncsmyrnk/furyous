@@ -17,7 +17,7 @@ variable "subdomain" {
 variable "edge_cache_ttl" {
   description = "Edge cache TTL"
   type        = number
-  default     = 86400 # Default to 1 day
+  default     = 3600 # Defaults to 1 hour
 }
 
 variable "fury_registry_base_url" {
