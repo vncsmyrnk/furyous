@@ -1,4 +1,5 @@
 import UI_HTML from './index.html';
+import { withTelemetry } from './telemetry.js';
 
 function compareSemVer(a, b) {
   const cleanA = a.replace(/^v/, '').split(/[+-]/)[0];
@@ -43,86 +44,88 @@ async function saveToEdgeCache(request, stringData, ttlSeconds) {
   await caches.default.put(request, cacheResponse);
 }
 
-export default {
-  async fetch(request, env, ctx) {
-    const requestUrl = new URL(request.url);
-    const targetPkg = requestUrl.searchParams.get('pkg');
-    const targetUser = requestUrl.searchParams.get('user');
+async function handler(request, env, ctx) {
+  const requestUrl = new URL(request.url);
+  const targetPkg = requestUrl.searchParams.get('pkg');
+  const targetUser = requestUrl.searchParams.get('user');
 
-    if (!targetPkg && !targetUser) {
-      return new Response(UI_HTML, {
-        status: 200,
-        headers: { 'Content-Type': 'text/html;charset=UTF-8' }
-      });
-    }
-
-    if (!targetPkg || !targetUser) {
-      return new Response("Missing required 'pkg' or 'user' query parameters.", {
-        status: 400,
-        headers: { 'Content-Type': 'text/plain' }
-      });
-    }
-
-    const cache = caches.default;
-    const cacheKey = new Request(request.url, request);
-    let cachedResponse = await cache.match(cacheKey);
-    if (cachedResponse) {
-      const hitResponse = new Response(cachedResponse.body, cachedResponse);
-      hitResponse.headers.set('X-Proxy-Cache', 'HIT');
-      return hitResponse;
-    }
-
-    const baseUrl = env.REGISTRY_BASE_URL || "https://apt.fury.io";
-    const safeUser = targetUser.replace(/[^a-zA-Z0-9_-]/g, "");
-    const targetRepoUrl = `${baseUrl}/${safeUser}/Packages`;
-
-    try {
-      const response = await fetch(targetRepoUrl);
-
-      if (!response.ok) {
-        return new Response(`Failed to fetch upstream repository: ${response.status}`, { status: 502 });
-      }
-
-      const rawText = await response.text();
-      const blocks = rawText.split(/\r?\n\r?\n/);
-
-      let latestVersion = "0.0.0";
-
-      for (const block of blocks) {
-        const pkgMatch = block.match(/^Package:\s*(.+)$/m);
-        const versionMatch = block.match(/^Version:\s*(.+)$/m);
-
-        if (versionMatch) {
-          const currentPkg = pkgMatch ? pkgMatch[1].trim() : "";
-          if (currentPkg !== targetPkg) continue;
-
-          const currentVersion = versionMatch[1].trim();
-          if (compareSemVer(currentVersion, latestVersion) > 0) {
-            latestVersion = currentVersion;
-          }
-        }
-      }
-
-      if (latestVersion === "0.0.0") {
-         return new Response(`Package '${targetPkg}' not found for user '${safeUser}'.`, { status: 404 });
-      }
-
-      const finalResponse = new Response(latestVersion, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/plain',
-          'Cache-Control': 'public, max-age=3600'
-        }
-      });
-
-      const ttl = env.EDGE_CACHE_TTL || 3600;
-      ctx.waitUntil(saveToEdgeCache(cacheKey, latestVersion, ttl));
-
-      finalResponse.headers.set('X-Proxy-Cache', 'MISS');
-      return finalResponse;
-
-    } catch (error) {
-      return new Response(`Error: ${error.message}`, { status: 500 });
-    }
+  if (!targetPkg && !targetUser) {
+    return new Response(UI_HTML, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html;charset=UTF-8' }
+    });
   }
+
+  if (!targetPkg || !targetUser) {
+    return new Response("Missing required 'pkg' or 'user' query parameters.", {
+      status: 400,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  }
+
+  const cache = caches.default;
+  const cacheKey = new Request(request.url, request);
+  let cachedResponse = await cache.match(cacheKey);
+  if (cachedResponse) {
+    const hitResponse = new Response(cachedResponse.body, cachedResponse);
+    hitResponse.headers.set('X-Proxy-Cache', 'HIT');
+    return hitResponse;
+  }
+
+  const baseUrl = env.REGISTRY_BASE_URL;
+  const safeUser = targetUser.replace(/[^a-zA-Z0-9_-]/g, "");
+  const targetRepoUrl = `${baseUrl}/${safeUser}/Packages`;
+
+  try {
+    const response = await fetch(targetRepoUrl);
+
+    if (!response.ok) {
+      return new Response(`Failed to fetch upstream repository: ${response.status}`, { status: 502 });
+    }
+
+    const rawText = await response.text();
+    const blocks = rawText.split(/\r?\n\r?\n/);
+
+    let latestVersion = "0.0.0";
+
+    for (const block of blocks) {
+      const pkgMatch = block.match(/^Package:\s*(.+)$/m);
+      const versionMatch = block.match(/^Version:\s*(.+)$/m);
+
+      if (versionMatch) {
+        const currentPkg = pkgMatch ? pkgMatch[1].trim() : "";
+        if (currentPkg !== targetPkg) continue;
+
+        const currentVersion = versionMatch[1].trim();
+        if (compareSemVer(currentVersion, latestVersion) > 0) {
+          latestVersion = currentVersion;
+        }
+      }
+    }
+
+    if (latestVersion === "0.0.0") {
+      return new Response(`Package '${targetPkg}' not found for user '${safeUser}'.`, { status: 404 });
+    }
+
+    const finalResponse = new Response(latestVersion, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
+
+    const ttl = env.EDGE_CACHE_TTL;
+    ctx.waitUntil(saveToEdgeCache(cacheKey, latestVersion, ttl));
+
+    finalResponse.headers.set('X-Proxy-Cache', 'MISS');
+    return finalResponse;
+
+  } catch (error) {
+    return new Response(`Error: ${error.message}`, { status: 500 });
+  }
+}
+
+export default {
+  fetch: withTelemetry(handler),
 };

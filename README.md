@@ -32,3 +32,10 @@ The service is entirely controlled via URL query parameters. Send a `GET` reques
 
 - [vncsmyrnk/gwin](https://github.com/vncsmyrnk/gwin/blob/005f748cbb2c534ed83712fcca9291d072c1f9b1/README.md?plain=1#L4): [furyous.vncsmyrnk.dev?user=vncsmyrnk&pkg=gwin](https://furyous.vncsmyrnk.dev/?user=vncsmyrnk&pkg=gwin)
 - [vncsmyrnk/shell-utils](https://github.com/vncsmyrnk/shell-utils/blob/9759c23e2dc7e8156009ae41e71eb66ae976050d/README.md?plain=1#L4): [furyous.vncsmyrnk.dev?user=vncsmyrnk&pkg=shell-utils](https://furyous.vncsmyrnk.dev/?user=vncsmyrnk&pkg=shell-utils)
+
+> [!NOTE]
+> This project uses **Cloudflare Workers Analytics Engine** to collect anonymous usage metrics. This data helps in monitoring the health of the proxy (e.g., catching 502/500 errors) and understanding which packages are most frequently requested.
+>
+> IP addresses or any personally identifiable information (PII) are **not** logged in any way.
+>
+> For a detailed breakdown, please see [PRIVACY.md](./PRIVACY.md).

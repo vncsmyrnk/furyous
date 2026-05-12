@@ -10,6 +10,11 @@
       "type": "plain_text",
       "name": "EDGE_CACHE_TTL",
       "text": "$EDGE_CACHE_TTL"
+    },
+    {
+      "type": "analytics_engine",
+      "name": "EDGE_METRICS",
+      "dataset": "furyous_telemetry"
     }
   ]
 }

@@ -29,6 +29,11 @@ resource "cloudflare_workers_script" "proxy_script" {
       name = "EDGE_CACHE_TTL"
       type = "plain_text"
       text = var.edge_cache_ttl
+    },
+    {
+      name = "EDGE_METRICS"
+      type = "analytics_engine"
+      text = "furyous_telemetry"
     }
   ]
 
