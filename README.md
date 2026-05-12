@@ -2,7 +2,7 @@
 [![Cloudflare Workers](https://img.shields.io/badge/-Cloudflare%20Workers-grey?style=plastic&logo=cloudflare)](https://developers.cloudflare.com/workers/)
 ![NodeJS](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fvncsmyrnk%2Ffuryous%2Fraw%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=%24.engines.node&style=plastic&logo=node.js&label=nodejs&color=green)
 ![PNPM](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fgithub.com%2Fvncsmyrnk%2Ffuryous%2Fraw%2Frefs%2Fheads%2Fmain%2Fpackage.json&search=%22packageManager%22%3A%20%22pnpm%5C%40(.*)%22&replace=v%241&style=plastic&logo=pnpm&label=pnpm&color=yellow)
-![Vitest](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fgithub.com%2Fvncsmyrnk%2Ffuryous%2Fraw%2Frefs%2Fheads%2Fmain%2Fpnpm-lock.yaml&query=%24.importers.'.'.devDependencies.vitest.version&prefix=v&style=plastic&logo=vite&label=vitetest&color=7131d1)
+![esbuild](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fgithub.com%2Fvncsmyrnk%2Ffuryous%2Fraw%2Frefs%2Fheads%2Fmain%2Fpnpm-lock.yaml&query=%24.importers.'.'.devDependencies.esbuild.version&prefix=v&style=plastic&logo=esbuild&label=esbuild&color=yellow)
 <br>
 [![CI/CD Pipeline](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml/badge.svg)](https://github.com/vncsmyrnk/furyous/actions/workflows/ci.yml)
 [![contributions](https://img.shields.io/badge/contributions-welcome-brightgreen?labelColor=384047&color=33cb56&style=plastic)](https://github.com/vncsmyrnk/furyous/issues)

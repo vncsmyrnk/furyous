@@ -1,3 +1,5 @@
+import UI_HTML from './index.html';
+
 function compareSemVer(a, b) {
   const cleanA = a.replace(/^v/, '').split(/[+-]/)[0];
   const cleanB = b.replace(/^v/, '').split(/[+-]/)[0];
@@ -46,6 +48,13 @@ export default {
     const requestUrl = new URL(request.url);
     const targetPkg = requestUrl.searchParams.get('pkg');
     const targetUser = requestUrl.searchParams.get('user');
+
+    if (!targetPkg && !targetUser) {
+      return new Response(UI_HTML, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html;charset=UTF-8' }
+      });
+    }
 
     if (!targetPkg || !targetUser) {
       return new Response("Missing required 'pkg' or 'user' query parameters.", {

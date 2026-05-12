@@ -1,0 +1,10 @@
+name = "furyous"
+main = "worker.js"
+
+[vars]
+REGISTRY_BASE_URL = "https://apt.fury.io"
+EDGE_CACHE_TTL = 3600
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]

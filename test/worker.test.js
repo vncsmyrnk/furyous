@@ -8,12 +8,20 @@ const MOCK_PACKAGES_RESPONSE = readFileSync(
   'utf8'
 );
 
+const { mockHtml } = vi.hoisted(() => ({
+  mockHtml: '<!DOCTYPE html><html><form id="mock"></form></html>'
+}));
+
 const mockEnv = {
   REGISTRY_BASE_URL: 'https://apt.fury.io'
 };
 
 const mockMatch = vi.fn();
 const mockPut = vi.fn();
+
+vi.mock('../src/index.html', () => ({
+  default: mockHtml
+}));
 
 global.caches = {
   default: {
@@ -124,21 +132,17 @@ describe('Worker Request Flow', () => {
     expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
   });
 
-  test('returns 400 if "user" and "pkg" query strings are not present', async () => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(""),
-      })
-    ));
+  test('returns the HTML UI with a 400 status when query strings are missing', async () => {
+    const request = new Request('http://localhost/');
+    const env = {};
+    const ctx = { waitUntil: vi.fn() };
 
-    const request = new Request('http://localhost');
-    const response = await worker.fetch(request, mockEnv, {});
+    const response = await worker.fetch(request, env, ctx);
+    const body = await response.text();
 
-    expect(response.status).toBe(400);
-
-    const resultText = await response.text();
-    expect(resultText).toContain('Missing required \'pkg\' or \'user\' query parameters.');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Content-Type')).toContain('text/html');
+    expect(body).toContain(mockHtml);
   });
 
   test('returns instantly from cache on a HIT', async () => {

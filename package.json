@@ -10,7 +10,10 @@
   },
   "scripts": {
     "dev": "wrangler dev src/worker.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:meta": "node scripts/build-metadata.js",
+    "build:js": "pnpm exec esbuild src/worker.js --bundle --format=esm --outfile=dist/worker.js --loader:.html=text",
+    "build": "pnpm run build:js && pnpm run build:meta"
   },
   "repository": {
     "type": "git",
@@ -19,12 +22,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/vncsmyrnk/furyous/issues"
   },
   "homepage": "https://github.com/vncsmyrnk/furyous",
   "devDependencies": {
+    "esbuild": "^0.28.0",
     "vitest": "^4.1.6",
     "wrangler": "^4.90.1"
   }

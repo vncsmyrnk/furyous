@@ -1,0 +1,15 @@
+{
+  "main_module": "worker.js",
+  "bindings": [
+    {
+      "type": "plain_text",
+      "name": "REGISTRY_BASE_URL",
+      "text": "$REGISTRY_BASE_URL"
+    },
+    {
+      "type": "plain_text",
+      "name": "EDGE_CACHE_TTL",
+      "text": "$EDGE_CACHE_TTL"
+    }
+  ]
+}
