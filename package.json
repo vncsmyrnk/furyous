@@ -30,7 +30,7 @@
   "homepage": "https://github.com/vncsmyrnk/furyous",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "^10.3.0",
     "eslinter": "^3.2.1",
     "globals": "^17.6.0",
